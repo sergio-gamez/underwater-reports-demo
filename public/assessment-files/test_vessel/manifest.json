@@ -1,0 +1,6 @@
+{
+  "recap": "test_vessel_recap.txt",
+  "baseCharterParty": "test_vessel_cp.pdf",
+  "riderClauses": "test_vessel_rider.pdf",
+  "additionalDocuments": ["test_vessel_additional_1.pdf"]
+} 
