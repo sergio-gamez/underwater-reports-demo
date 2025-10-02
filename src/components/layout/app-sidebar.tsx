@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
-  AlertTriangle,
+  FileText,
   LogOut,
   Menu,
   X
@@ -36,8 +36,8 @@ export function AppSidebar({
   const analysisNavItems: NavItem[] = [
     {
       id: 'risk-assessment',
-      label: 'Risk Assessment',
-      icon: <AlertTriangle className="h-4 w-4" />
+      label: 'Reports',
+      icon: <FileText className="h-4 w-4" />
     }
   ];
 
@@ -77,17 +77,10 @@ export function AppSidebar({
       
       {/* Navigation Items */}
       <ScrollArea className="flex-1 p-4">
-        <div className="space-y-6">
-          <div>
-            <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-              Analysis
-            </h2>
-            <div className="space-y-1">
-              {analysisNavItems.map((item) => (
-                <NavButton key={item.id} item={item} />
-              ))}
-            </div>
-          </div>
+        <div className="space-y-1">
+          {analysisNavItems.map((item) => (
+            <NavButton key={item.id} item={item} />
+          ))}
         </div>
       </ScrollArea>
       
