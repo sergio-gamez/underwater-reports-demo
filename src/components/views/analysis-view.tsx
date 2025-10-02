@@ -17,7 +17,6 @@ import { StorageService } from "@/lib/storage-service";
 import { TriageStatus } from "@/types/triage";
 import { FILTER_ALL } from "@/lib/constants";
 import { AnalysisEmptyState } from "@/components/analysis/analysis-empty-state";
-import { Report, isReport } from "@/types/analysis";
 import { sortAnalysisItems, sortRiskTypes } from "@/lib/sorting-utils";
 import { FilesView } from "./files-view";
 
@@ -90,21 +89,38 @@ export function AnalysisView({ assessmentId }: AnalysisViewProps) {
       try {
         const assessmentData = await loadAssessmentDataForTenant(assessmentId, username);
         if (assessmentData) {
-          const risksReport = assessmentData.risks;
-          const conflictsReport = assessmentData.conflicts;
+          // Convert part_assessments to AnalysisItem format
+          const partAssessments = assessmentData.assessment?.part_assessments ?? [];
 
-          const risks = isReport<AnalysisItem>(risksReport) ? risksReport.risk_assessment_report ?? [] : [];
-          const conflicts = isReport<AnalysisItem>(conflictsReport) ? conflictsReport.conflicts_report ?? [] : [];
-          
-          const hasData = risks.length > 0 || conflicts.length > 0;
+          const analysisItems: AnalysisItem[] = partAssessments.map((part, index) => ({
+            title: part.part_name,
+            type: 'Potential Risk' as const,
+            description: part.agent_observation,
+            summary: part.provider_claim,
+            severity: part.traffic_light,
+            risk_summary: part.reasoning,
+            clause_references: [{
+              clause: part.part_name,
+              description: part.provider_claim,
+              location: `Page ${part.image_pages.join(', ')}`,
+              full_text: part.agent_observation
+            }],
+            actions: [],
+            metadata: {
+              vessel_name: assessmentData.assessment.vessel_name,
+              charter_party_date: assessmentData.assessment.assessment_date
+            }
+          }));
+
+          const hasData = analysisItems.length > 0;
           setHasAnalysisData(hasData);
-          
+
           // If assessment has no analysis data, switch to "files" tab
           if (!hasData) {
             setActiveTab('files');
           }
-          
-          setAnalysisItems([...risks, ...conflicts]);
+
+          setAnalysisItems(analysisItems);
         } else {
           setError('Assessment not found');
         }
