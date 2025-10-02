@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 // Multi-tenant authentication configuration
 const VALID_CREDENTIALS = {
-  'ldc': 'underwaterreports',
+  'ldc': 'genevaairport',
   'admin': 'adminpass'
 };
 
